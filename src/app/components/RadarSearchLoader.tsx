@@ -1,5 +1,6 @@
 import { motion } from "motion/react";
 import { Activity, Stethoscope, MapPin, User, Plus, Heart } from "lucide-react";
+import { createPortal } from "react-dom";
 
 const WIDGET_ICONS = [Stethoscope, MapPin, User, Plus, Heart];
 
@@ -15,8 +16,8 @@ export function RadarSearchLoader() {
         isIcon: i % 2 === 0, // Mix of icons and dots
     }));
 
-    return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/95 backdrop-blur-sm">
+    return createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-background/95 backdrop-blur-sm">
             {/* Central Logo */}
             <div className="relative z-20">
                 <motion.div
@@ -68,7 +69,8 @@ export function RadarSearchLoader() {
             >
                 Searching nearby specialists...
             </motion.div>
-        </div>
+        </div>,
+        document.body
     );
 }
 
