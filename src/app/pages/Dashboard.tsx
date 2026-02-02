@@ -1,6 +1,7 @@
 import { Navigation } from "@/app/components/Navigation";
 import { Button } from "@/app/components/ui/button";
 import { MessageCircle, ChevronRight, Plus, Star } from "lucide-react";
+import { Link } from "react-router";
 import { motion } from "motion/react";
 import { PageTransition } from "@/app/components/PageTransition";
 import { Footer } from "@/app/components/Footer";
@@ -113,9 +114,11 @@ export function Dashboard() {
                                     </div>
 
                                     <div className="flex items-center gap-3">
-                                        <Button className="flex-1 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white font-semibold transition-colors">
-                                            Details
-                                        </Button>
+                                        <Link to={`/doctor-details/${doctor.id}`} className="flex-1">
+                                            <Button className="w-full rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white font-semibold transition-colors">
+                                                Details
+                                            </Button>
+                                        </Link>
                                         <Button size="icon" variant="outline" className="rounded-xl border-gray-200 text-gray-400 hover:text-primary hover:border-primary/30">
                                             <MessageCircle className="w-5 h-5" />
                                         </Button>
