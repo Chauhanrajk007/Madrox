@@ -1,214 +1,179 @@
-import { BackgroundBlobs } from "@/app/components/BackgroundBlobs";
 import { Navigation } from "@/app/components/Navigation";
-import { Input } from "@/app/components/ui/input";
 import { Button } from "@/app/components/ui/button";
-import { Search, TrendingUp, DollarSign, Activity } from "lucide-react";
+import { MessageCircle, ChevronRight, Plus, Star } from "lucide-react";
 import { motion } from "motion/react";
 import { PageTransition } from "@/app/components/PageTransition";
 import { Footer } from "@/app/components/Footer";
-import {
-    BarChart,
-    Bar,
-    XAxis,
-    YAxis,
-    CartesianGrid,
-    Tooltip,
-    ResponsiveContainer,
-    AreaChart,
-    Area,
-} from "recharts";
+import { ScrollArea, ScrollBar } from "@/app/components/ui/scroll-area";
+import { Avatar, AvatarFallback, AvatarImage } from "@/app/components/ui/avatar";
 
-const priceTrendData = [
-    { month: "Jan", avg: 12000, low: 8000, high: 16000 },
-    { month: "Feb", avg: 12500, low: 8500, high: 17000 },
-    { month: "Mar", avg: 11800, low: 7900, high: 15500 },
-    { month: "Apr", avg: 13000, low: 9000, high: 18000 },
-    { month: "May", avg: 12200, low: 8100, high: 16200 },
-    { month: "Jun", avg: 11500, low: 7800, high: 15000 },
+const activeDoctors = [
+    {
+        id: 1,
+        name: "Dr. Sarah Smith",
+        specialty: "Cardiologist",
+        image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=2070&auto=format&fit=crop",
+        status: "Today 2:00 PM",
+        statusColor: "bg-red-100 text-red-600",
+        rating: 4.8
+    },
+    {
+        id: 2,
+        name: "Dr. John Doe",
+        specialty: "General Practitioner",
+        image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?q=80&w=2070&auto=format&fit=crop",
+        status: "Pending Results",
+        statusColor: "bg-amber-100 text-amber-600",
+        rating: 4.9
+    },
+    {
+        id: 3,
+        name: "Dr. Emily Chen",
+        specialty: "Neurologist",
+        image: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?q=80&w=2070&auto=format&fit=crop",
+        status: "Tomorrow 10:00 AM",
+        statusColor: "bg-blue-100 text-blue-600",
+        rating: 4.7
+    }
 ];
 
-const procedureData = [
-    { name: "MRI Scan", hospital: 25000, clinic: 8000, savings: 17000 },
-    { name: "CT Scan", hospital: 18000, clinic: 4500, savings: 13500 },
-    { name: "X-Ray", hospital: 4000, clinic: 800, savings: 3200 },
-    { name: "Blood Panel", hospital: 6000, clinic: 1200, savings: 4800 },
-    { name: "Ultrasound", hospital: 9000, clinic: 2500, savings: 6500 },
+const visitHistory = [
+    {
+        id: 1,
+        doctor: "Dr. Emily Chen",
+        specialty: "Migraine, Nausea",
+        date: "Oct 12",
+        image: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?q=80&w=100&auto=format&fit=crop"
+    },
+    {
+        id: 2,
+        doctor: "Dr. Mark Wilson",
+        specialty: "Annual Checkup",
+        date: "Sep 05",
+        image: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?q=80&w=100&auto=format&fit=crop"
+    },
+    {
+        id: 3,
+        doctor: "Dr. Sarah Smith",
+        specialty: "Chest Pain",
+        date: "Aug 20",
+        image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=100&auto=format&fit=crop"
+    }
 ];
-
-const formatRupees = (amount: number) => {
-    return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(amount);
-};
 
 export function Dashboard() {
     return (
-        <PageTransition className="min-h-screen bg-background pb-32 relative overflow-hidden">
-            <BackgroundBlobs />
+        <PageTransition className="min-h-screen bg-gray-50/50 pb-32">
             <Navigation />
 
-            <main className="pt-24 px-6 relative z-10">
-                <div className="max-w-7xl mx-auto space-y-12">
-                    {/* Header */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5 }}
-                        className="text-center space-y-4"
-                    >
-                        <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
-                            Medical Price <span className="text-primary">Dashboard</span>
-                        </h1>
-                        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                            Compare prices across hospitals and clinics to ensure you're paying a fair rate.
-                        </p>
+            <main className="pt-24 px-4 md:px-6 max-w-7xl mx-auto space-y-8">
 
-                        <div className="max-w-xl mx-auto mt-8 relative group">
-                            <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                                <Search className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
-                            </div>
-                            <Input
-                                type="text"
-                                placeholder="Search procedures (e.g., MRI, X-Ray)..."
-                                className="pl-10 h-14 bg-white/60 backdrop-blur-md border-white/40 shadow-sm rounded-full text-lg focus:shadow-lg focus:border-primary/50 transition-all"
-                            />
-                            <Button className="absolute right-1 top-1 h-12 rounded-full px-8 shadow-md">
-                                Search
-                            </Button>
-                        </div>
-                    </motion.div>
 
-                    {/* Key Metrics */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {[
-                            { label: "Average Savings", value: "₹45,000", icon: TrendingUp, color: "text-emerald-500" },
-                            { label: "Price Variations", value: "3.5x", icon: DollarSign, color: "text-primary" },
-                            { label: "Procedures Tracked", value: "1,200+", icon: Activity, color: "text-blue-500" },
-                        ].map((stat, i) => (
+                {/* Active Doctors Section */}
+                <section>
+                    <div className="flex items-center justify-between mb-4 px-1">
+                        <h2 className="text-xl font-bold text-gray-900">Active Doctors</h2>
+                        <Button variant="ghost" className="text-primary hover:text-primary/80 hover:bg-primary/5 font-medium">
+                            See all
+                        </Button>
+                    </div>
+
+                    <ScrollArea className="w-full whitespace-nowrap pb-4">
+                        <div className="flex space-x-4 pb-2">
+                            {activeDoctors.map((doctor, i) => (
+                                <motion.div
+                                    key={doctor.id}
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: i * 0.1 }}
+                                    className="inline-block w-[280px] md:w-[320px] bg-white rounded-[24px] p-4 shadow-sm border border-gray-100/50 hover:shadow-md transition-shadow"
+                                >
+                                    <div className="relative h-40 rounded-[20px] overflow-hidden mb-4 group">
+                                        <img
+                                            src={doctor.image}
+                                            alt={doctor.name}
+                                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                        />
+                                        <div className="absolute top-3 right-3">
+                                            <span className={`px-3 py-1.5 rounded-full text-xs font-semibold backdrop-blur-md ${doctor.statusColor} shadow-sm`}>
+                                                {doctor.status}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-1 mb-4">
+                                        <div className="flex items-center justify-between">
+                                            <h3 className="font-bold text-lg text-gray-900 truncate">{doctor.name}</h3>
+                                            <div className="flex items-center gap-1 text-amber-500">
+                                                <Star className="w-3.5 h-3.5 fill-current" />
+                                                <span className="text-sm font-semibold">{doctor.rating}</span>
+                                            </div>
+                                        </div>
+                                        <p className="text-sm text-primary font-medium">{doctor.specialty}</p>
+                                    </div>
+
+                                    <div className="flex items-center gap-3">
+                                        <Button className="flex-1 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white font-semibold transition-colors">
+                                            Details
+                                        </Button>
+                                        <Button size="icon" variant="outline" className="rounded-xl border-gray-200 text-gray-400 hover:text-primary hover:border-primary/30">
+                                            <MessageCircle className="w-5 h-5" />
+                                        </Button>
+                                    </div>
+                                </motion.div>
+                            ))}
+
+                            {/* Find Doctor Card */}
                             <motion.div
-                                key={i}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.1 * i, duration: 0.4 }}
-                                whileHover={{ y: -5 }}
-                                className="bg-white/60 backdrop-blur-md border border-white/40 rounded-[20px] p-6 shadow-sm flex items-center gap-4 group cursor-default"
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.3 }}
+                                className="inline-flex w-[120px] bg-gray-50 rounded-[24px] border-2 border-dashed border-gray-200 hover:border-primary/50 hover:bg-primary/5 transition-colors cursor-pointer items-center justify-center flex-col gap-2 group"
                             >
-                                <div className={`w-14 h-14 rounded-full bg-white flex items-center justify-center shadow-sm ${stat.color} group-hover:scale-110 transition-transform`}>
-                                    <stat.icon className="w-7 h-7" />
+                                <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center group-hover:scale-110 transition-transform text-gray-400 group-hover:text-primary">
+                                    <Plus className="w-5 h-5" />
                                 </div>
-                                <div>
-                                    <div className="text-3xl font-bold">{stat.value}</div>
-                                    <div className="text-sm text-muted-foreground">{stat.label}</div>
+                                <span className="text-xs font-semibold text-gray-400 group-hover:text-primary">Find Doctor</span>
+                            </motion.div>
+                        </div>
+                        <ScrollBar orientation="horizontal" className="hidden" />
+                    </ScrollArea>
+                </section>
+
+                {/* Visit History Section */}
+                <section>
+                    <h2 className="text-xl font-bold text-gray-900 mb-4 px-1">Visit History</h2>
+                    <div className="space-y-4">
+                        {visitHistory.map((visit, i) => (
+                            <motion.div
+                                key={visit.id}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.2 + (i * 0.1) }}
+                                className="group bg-white rounded-[20px] p-4 flex items-center justify-between shadow-sm border border-gray-100/50 hover:shadow-md transition-all cursor-pointer"
+                            >
+                                <div className="flex items-center gap-4">
+                                    <Avatar className="w-12 h-12 rounded-2xl border-2 border-white shadow-sm">
+                                        <AvatarImage src={visit.image} className="object-cover" />
+                                        <AvatarFallback>DR</AvatarFallback>
+                                    </Avatar>
+                                    <div>
+                                        <h3 className="font-bold text-gray-900 group-hover:text-primary transition-colors">{visit.doctor}</h3>
+                                        <p className="text-sm text-gray-500">{visit.specialty}</p>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-4">
+                                    <span className="text-sm font-medium text-gray-400 bg-gray-50 px-3 py-1 rounded-lg">{visit.date}</span>
+                                    <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-primary group-hover:text-white transition-colors">
+                                        <ChevronRight className="w-4 h-4" />
+                                    </div>
                                 </div>
                             </motion.div>
                         ))}
                     </div>
-
-                    {/* Charts Section */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        {/* Price Trend Chart */}
-                        <motion.div
-                            initial={{ opacity: 0, x: -20 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            viewport={{ once: true }}
-                            className="bg-white/60 backdrop-blur-md border border-white/40 rounded-[28px] p-8 shadow-sm"
-                        >
-                            <h3 className="text-xl font-semibold mb-6">Price Trends (2024)</h3>
-                            <div className="h-[300px] w-full">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <AreaChart data={priceTrendData}>
-                                        <defs>
-                                            <linearGradient id="colorAvg" x1="0" y1="0" x2="0" y2="1">
-                                                <stop offset="5%" stopColor="#A92655" stopOpacity={0.3} />
-                                                <stop offset="95%" stopColor="#A92655" stopOpacity={0} />
-                                            </linearGradient>
-                                        </defs>
-                                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,0,0,0.1)" />
-                                        <XAxis dataKey="month" axisLine={false} tickLine={false} />
-                                        <YAxis axisLine={false} tickLine={false} />
-                                        <Tooltip
-                                            formatter={(value: number) => formatRupees(value)}
-                                            contentStyle={{ backgroundColor: 'rgba(255, 255, 255, 0.9)', borderRadius: '12px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}
-                                        />
-                                        <Area
-                                            type="monotone"
-                                            dataKey="avg"
-                                            stroke="#A92655"
-                                            strokeWidth={3}
-                                            fillOpacity={1}
-                                            fill="url(#colorAvg)"
-                                        />
-                                    </AreaChart>
-                                </ResponsiveContainer>
-                            </div>
-                        </motion.div>
-
-                        {/* Hospital vs Clinic Savings */}
-                        <motion.div
-                            initial={{ opacity: 0, x: 20 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            viewport={{ once: true }}
-                            className="bg-white/60 backdrop-blur-md border border-white/40 rounded-[28px] p-8 shadow-sm"
-                        >
-                            <h3 className="text-xl font-semibold mb-6">Hospital vs. Clinic Costs</h3>
-                            <div className="h-[300px] w-full">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <BarChart data={procedureData} layout="vertical">
-                                        <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="rgba(0,0,0,0.1)" />
-                                        <XAxis type="number" hide />
-                                        <YAxis dataKey="name" type="category" width={100} axisLine={false} tickLine={false} />
-                                        <Tooltip
-                                            formatter={(value: number) => formatRupees(value)}
-                                            cursor={{ fill: 'transparent' }}
-                                            contentStyle={{ backgroundColor: 'rgba(255, 255, 255, 0.9)', borderRadius: '12px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}
-                                        />
-                                        <Bar dataKey="hospital" name="Hospital Cost" fill="#A92655" radius={[0, 4, 4, 0]} barSize={20} />
-                                        <Bar dataKey="clinic" name="Clinic Cost" fill="#FD8D67" radius={[0, 4, 4, 0]} barSize={20} />
-                                    </BarChart>
-                                </ResponsiveContainer>
-                            </div>
-                        </motion.div>
-                    </div>
-
-                    {/* Glass Table */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        className="bg-white/60 backdrop-blur-md border border-white/40 rounded-[28px] overflow-hidden shadow-sm"
-                    >
-                        <div className="p-6 border-b border-white/20">
-                            <h3 className="text-xl font-semibold">Procedure Pricing Index</h3>
-                        </div>
-                        <div className="overflow-x-auto">
-                            <table className="w-full">
-                                <thead>
-                                    <tr className="bg-primary/5 text-left">
-                                        <th className="p-4 font-semibold text-primary">Procedure</th>
-                                        <th className="p-4 font-semibold text-primary">Fair Price</th>
-                                        <th className="p-4 font-semibold text-primary">Avg. Hospital</th>
-                                        <th className="p-4 font-semibold text-primary">Potential Savings</th>
-                                        <th className="p-4 font-semibold text-primary">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-white/40">
-                                    {procedureData.map((item, i) => (
-                                        <tr key={i} className="hover:bg-white/40 transition-colors">
-                                            <td className="p-4 font-medium">{item.name}</td>
-                                            <td className="p-4">{formatRupees(item.clinic)} - {formatRupees(item.clinic * 1.2)}</td>
-                                            <td className="p-4 text-destructive">{formatRupees(item.hospital)}</td>
-                                            <td className="p-4 text-emerald-600 font-bold">{formatRupees(item.savings)}</td>
-                                            <td className="p-4">
-                                                <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-medium">
-                                                    Verified
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </motion.div>
-                </div>
+                </section>
             </main>
+
             <Footer />
         </PageTransition>
     );
