@@ -94,8 +94,8 @@ export function matchSymptomsToSpecialties(symptoms: string): string[] {
   for (const userSymptom of individualSymptoms) {
     // Check against all defined symptom keywords
     for (const [keyword, specialties] of Object.entries(symptomToSpecialtyMap)) {
-      // Exact match or phrase match
-      if (userSymptom === keyword || keyword === userSymptom) {
+      // Exact match
+      if (userSymptom === keyword) {
         specialties.forEach(specialty => matchedSpecialties.add(specialty));
         continue;
       }

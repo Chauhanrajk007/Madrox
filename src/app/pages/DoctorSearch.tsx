@@ -5,7 +5,7 @@ import { BackgroundBlobs } from "@/app/components/BackgroundBlobs";
 import { PageTransition } from "@/app/components/PageTransition";
 import { Footer } from "@/app/components/Footer";
 import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router";
+import { useSearchParams, useNavigate } from "react-router";
 import { RadarSearchLoader } from "@/app/components/RadarSearchLoader";
 import { X, MapPin, Shield, CheckCircle, GraduationCap, Briefcase, Star, Calendar, Languages, Building2, Clock, Globe } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
@@ -185,6 +185,7 @@ export function DoctorSearch() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   
   // Get symptoms from URL parameters
   const symptomsQuery = searchParams.get('symptoms');
@@ -268,7 +269,7 @@ export function DoctorSearch() {
               </p>
               <Button
                 size="lg"
-                onClick={() => window.location.href = '/doctor-search'}
+                onClick={() => navigate('/doctor-search')}
                 className="rounded-2xl shadow-xl shadow-primary/20 hover:scale-[1.02] transition-transform"
               >
                 View All Doctors
