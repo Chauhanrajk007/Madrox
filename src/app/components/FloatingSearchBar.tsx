@@ -1,15 +1,17 @@
 import { Camera, Send } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import { Input } from "@/app/components/ui/input";
 import { Button } from "@/app/components/ui/button";
 
 export function FloatingSearchBar() {
   const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
-      // Handle search logic
-      console.log("Searching for:", searchQuery);
+      // Navigate to doctor search page with symptoms as URL parameter
+      navigate(`/doctor-search?symptoms=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
 
