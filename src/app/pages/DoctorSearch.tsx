@@ -195,11 +195,13 @@ export function DoctorSearch() {
     : [];
   
   // Filter doctors based on matched specialties
-  const filteredDoctors = symptomsQuery && matchedSpecialties.length > 0
-    ? mockDoctors.filter(doctor => 
-        matchedSpecialties.includes(doctor.specialty)
-      )
-    : mockDoctors;
+  const filteredDoctors = symptomsQuery
+    ? matchedSpecialties.length > 0
+      ? mockDoctors.filter(doctor => 
+          matchedSpecialties.includes(doctor.specialty)
+        )
+      : [] // No matches - show empty results
+    : mockDoctors; // No symptoms - show all doctors
 
   useEffect(() => {
     const timer = setTimeout(() => {

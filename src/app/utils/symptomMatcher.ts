@@ -94,21 +94,31 @@ export function matchSymptomsToSpecialties(symptoms: string): string[] {
   for (const userSymptom of individualSymptoms) {
     // Check against all defined symptom keywords
     for (const [keyword, specialties] of Object.entries(symptomToSpecialtyMap)) {
-      // Fuzzy match: check if keyword is contained in user symptom or vice versa
-      if (
-        userSymptom.includes(keyword) || 
-        keyword.includes(userSymptom)
-      ) {
+      // Exact match or phrase match
+      if (userSymptom === keyword || keyword === userSymptom) {
         specialties.forEach(specialty => matchedSpecialties.add(specialty));
+        continue;
       }
-    }
-    
-    // Also check if any keyword contains the user's symptom (for partial matches)
-    // This handles cases like "chest" matching "chest pain"
-    for (const [keyword, specialties] of Object.entries(symptomToSpecialtyMap)) {
-      const keywordWords = keyword.split(/\s+/);
-      if (keywordWords.some(word => word === userSymptom || userSymptom.includes(word))) {
+      
+      // Check if user's symptom contains the complete keyword phrase
+      if (userSymptom.includes(keyword)) {
         specialties.forEach(specialty => matchedSpecialties.add(specialty));
+        continue;
+      }
+      
+      // Check if keyword contains the complete user symptom
+      if (keyword.includes(userSymptom)) {
+        specialties.forEach(specialty => matchedSpecialties.add(specialty));
+        continue;
+      }
+      
+      // For single-word symptoms, check if they match the first word of multi-word keywords
+      // This handles cases like "chest" matching "chest pain" but not "back" matching "chest pain"
+      if (!userSymptom.includes(' ')) {
+        const keywordFirstWord = keyword.split(/\s+/)[0];
+        if (userSymptom === keywordFirstWord) {
+          specialties.forEach(specialty => matchedSpecialties.add(specialty));
+        }
       }
     }
   }
