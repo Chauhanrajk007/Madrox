@@ -5,6 +5,7 @@ import { BackgroundBlobs } from "@/app/components/BackgroundBlobs";
 import { PageTransition } from "@/app/components/PageTransition";
 import { Footer } from "@/app/components/Footer";
 import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router";
 import { RadarSearchLoader } from "@/app/components/RadarSearchLoader";
 import { X, MapPin, Shield, CheckCircle, GraduationCap, Briefcase, Star, Calendar, Languages, Building2, Clock, Globe } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
@@ -12,6 +13,7 @@ import { Badge } from "@/app/components/ui/badge";
 import { Progress } from "@/app/components/ui/progress";
 import { Avatar, AvatarFallback, AvatarImage } from "@/app/components/ui/avatar";
 import { createPortal } from "react-dom";
+import { matchSymptomsToSpecialties } from "@/app/utils/symptomMatcher";
 
 // Rich Mock Data
 const mockDoctors = [
@@ -182,6 +184,22 @@ const mockDoctors = [
 export function DoctorSearch() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [searchParams] = useSearchParams();
+  
+  // Get symptoms from URL parameters
+  const symptomsQuery = searchParams.get('symptoms');
+  
+  // Match symptoms to specialties
+  const matchedSpecialties = symptomsQuery 
+    ? matchSymptomsToSpecialties(symptomsQuery) 
+    : [];
+  
+  // Filter doctors based on matched specialties
+  const filteredDoctors = symptomsQuery && matchedSpecialties.length > 0
+    ? mockDoctors.filter(doctor => 
+        matchedSpecialties.includes(doctor.specialty)
+      )
+    : mockDoctors;
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -212,20 +230,49 @@ export function DoctorSearch() {
               Find Doctors Near You
             </h1>
             <p className="text-muted-foreground">
-              Showing {mockDoctors.length} specialists matching your symptoms
+              {symptomsQuery 
+                ? `Showing ${filteredDoctors.length} specialists for '${symptomsQuery}'`
+                : `Showing ${filteredDoctors.length} specialists matching your search`
+              }
             </p>
           </motion.div>
 
           {/* Doctor Cards Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-            {mockDoctors.map((doctor) => (
-              <DoctorCard
-                key={doctor.id}
-                doctor={doctor}
-                onClick={() => setSelectedId(doctor.id)}
-              />
-            ))}
-          </div>
+          {filteredDoctors.length > 0 ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+              {filteredDoctors.map((doctor) => (
+                <DoctorCard
+                  key={doctor.id}
+                  doctor={doctor}
+                  onClick={() => setSelectedId(doctor.id)}
+                />
+              ))}
+            </div>
+          ) : (
+            <motion.div
+              className="flex flex-col items-center justify-center py-16 px-6"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.2 }}
+            >
+              <div className="bg-secondary/20 rounded-full p-8 mb-6">
+                <Shield className="w-16 h-16 text-muted-foreground" />
+              </div>
+              <h2 className="text-2xl font-semibold text-foreground mb-3">
+                No doctors found
+              </h2>
+              <p className="text-muted-foreground text-center max-w-md mb-6">
+                We couldn't find any specialists matching your symptoms. Try searching with different terms or view all available doctors.
+              </p>
+              <Button
+                size="lg"
+                onClick={() => window.location.href = '/doctor-search'}
+                className="rounded-2xl shadow-xl shadow-primary/20 hover:scale-[1.02] transition-transform"
+              >
+                View All Doctors
+              </Button>
+            </motion.div>
+          )}
         </div>
       </main>
 
