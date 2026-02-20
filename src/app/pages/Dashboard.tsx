@@ -7,6 +7,7 @@ import { PageTransition } from "@/app/components/PageTransition";
 import { Footer } from "@/app/components/Footer";
 import { ScrollArea, ScrollBar } from "@/app/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/app/components/ui/avatar";
+import { openChat } from "@/services/chatEvents";
 
 const activeDoctors = [
     {
@@ -119,7 +120,12 @@ export function Dashboard() {
                                                 Details
                                             </Button>
                                         </Link>
-                                        <Button size="icon" variant="outline" className="rounded-xl border-gray-200 text-gray-400 hover:text-primary hover:border-primary/30">
+                                        <Button 
+                                            size="icon" 
+                                            variant="outline" 
+                                            className="rounded-xl border-gray-200 text-gray-400 hover:text-primary hover:border-primary/30"
+                                            onClick={openChat}
+                                        >
                                             <MessageCircle className="w-5 h-5" />
                                         </Button>
                                     </div>
